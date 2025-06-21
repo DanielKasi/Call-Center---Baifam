@@ -280,30 +280,6 @@ export default function CreateApprovalStep() {
                       </SelectContent>
                     </Select>
                   </div>
-
-                  {/* Level Input with Tooltip */}
-                  {/* <div className="space-y-2">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    Level
-                    <span
-                      className="text-xs font-normal text-muted-foreground cursor-help border border-border rounded-full w-4 h-4 flex items-center justify-center"
-                      title="Lower number = first to approve"
-                    >
-                      i
-                    </span>
-                  </label>
-                  <Input
-                    type="number"
-                    min="1"
-                    value={level}
-                    onChange={(e) => setLevel(e.target.value)}
-                    placeholder="Enter approval order level"
-                    className="w-full"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Lower number indicates earlier approval in the process
-                  </p>
-                </div> */}
                 </div>
 
                 <div className="mt-8 flex justify-end gap-2">

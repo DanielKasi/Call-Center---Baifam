@@ -10,7 +10,7 @@ import {toast} from "sonner";
 
 import {Button} from "@/components/ui/button";
 import apiRequest from "@/lib/apiRequest";
-import {hexToHSL} from "@/app/(dashboard)/layout";
+import { hexToHSL } from "@/lib/utils";
 import {selectSelectedInstitution} from "@/store/auth/selectors";
 import {removeThemeStart, updateThemeStart} from "@/store/auth/actions";
 import {getDefaultInstitutionId, getInstitutionById} from "@/lib/helpers";
