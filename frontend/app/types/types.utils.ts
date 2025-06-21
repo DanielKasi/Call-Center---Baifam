@@ -45,3 +45,14 @@ export enum PERMISSION_CODES {
   CAN_ADD_BRANCH = "can_add_branch",
   CAN_VIEW_ADMIN_PAGE = "can_view_admin_page",
 }
+
+
+
+export type IContact = {
+  id: string
+  name: string
+  phone: string
+  agent: string | null
+  product: string
+  status: "Active" | "Inactive" | "Processing"
+}
