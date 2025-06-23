@@ -3,13 +3,16 @@
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Icon } from "@iconify/react"
-import { IContact } from "@/app/types/types.utils"
+import type { IContact } from "@/app/types/types.utils"
+import Link from "next/link"
 
 interface ContactsListProps {
   contacts: IContact[]
+  selectedContactIds: string[]
+  onSelectionChange: (selectedIds: string[]) => void
 }
 
-export function ContactsList({ contacts }: ContactsListProps) {
+export function ContactsList({ contacts, selectedContactIds, onSelectionChange }: ContactsListProps) {
   const getStatusColor = (status: IContact["status"]) => {
     switch (status) {
       case "Active":
@@ -23,14 +26,41 @@ export function ContactsList({ contacts }: ContactsListProps) {
     }
   }
 
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      onSelectionChange(contacts.map((contact) => contact.id))
+    } else {
+      onSelectionChange([])
+    }
+  }
+
+  const handleSelectContact = (contactId: string, checked: boolean) => {
+    if (checked) {
+      onSelectionChange([...selectedContactIds, contactId])
+    } else {
+      onSelectionChange(selectedContactIds.filter((id) => id !== contactId))
+    }
+  }
+
+  const isAllSelected = contacts.length > 0 && selectedContactIds.length === contacts.length
+  const isIndeterminate = selectedContactIds.length > 0 && selectedContactIds.length < contacts.length
+
   return (
-    <div className=" rounded-xl border border-gray-200 overflow-hidden w-full !max-w-full">
+    <div className="rounded-xl border border-gray-200 overflow-hidden w-full !max-w-full">
       <div className="px-2 !max-w-full">
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <input type="checkbox" className="rounded" />
+                <input
+                  type="checkbox"
+                  className="rounded"
+                  checked={isAllSelected}
+                  ref={(el) => {
+                    if (el) el.indeterminate = isIndeterminate
+                  }}
+                  onChange={(e) => handleSelectAll(e.target.checked)}
+                />
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -48,9 +78,17 @@ export function ContactsList({ contacts }: ContactsListProps) {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {contacts.map((contact) => (
-              <tr key={contact.id} className="hover:bg-gray-50">
+              <tr
+                key={contact.id}
+                className={`hover:bg-gray-50 ${selectedContactIds.includes(contact.id) ? "bg-blue-50" : ""}`}
+              >
                 <td className="px-4 py-3 whitespace-nowrap">
-                  <input type="checkbox" className="rounded" />
+                  <input
+                    type="checkbox"
+                    className="rounded"
+                    checked={selectedContactIds.includes(contact.id)}
+                    onChange={(e) => handleSelectContact(contact.id, e.target.checked)}
+                  />
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">{contact.name}</div>
@@ -69,9 +107,11 @@ export function ContactsList({ contacts }: ContactsListProps) {
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap text-sm font-medium">
                   <div className="flex items-center space-x-2">
-                    <Button variant="ghost" size="sm" className="p-2 rounded-lg">
-                      <Icon icon="hugeicons:view" className="w-4 h-4" />
-                    </Button>
+                    <Link href={`/contacts/${contact.id}`}>
+                      <Button variant="ghost" size="sm" className="p-2 rounded-lg">
+                        <Icon icon="hugeicons:view" className="w-4 h-4" />
+                      </Button>
+                    </Link>
                     <Button variant="ghost" size="sm" className="p-2 rounded-lg">
                       <Icon icon="hugeicons:call" className="w-4 h-4" />
                     </Button>

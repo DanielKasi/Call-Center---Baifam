@@ -4,7 +4,7 @@ import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@iconify/react"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 
 type NavItem = {
     name:string,
@@ -33,12 +33,19 @@ const navigation:NavItem[] = [
         href: "/calls",
         icon: "hugeicons:call-outgoing-03",
     },
+    {
+        name: "Communications",
+        href: "/communications",
+        icon: "hugeicons:message-01",
+    },
 ]
+ 
 
 
 export function DashboardSidebar() {
     const [collapsed, setCollapsed] = useState(false);
     const [currentNavItem, setCurrentNavItem] = useState("Dashboard");
+    const pathName = usePathname();
 
     const router = useRouter();
 
@@ -64,7 +71,7 @@ export function DashboardSidebar() {
                             }}
                             className={cn(
                                 "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer",
-                                item.name === currentNavItem
+                                (pathName === item.href || pathName.startsWith(item.href + "/"))
                                     ? "bg-primary-700 text-gray-100"
                                     : "text-gray-600 hover:bg-primary-100 hover:text-gray-900",
                             )}

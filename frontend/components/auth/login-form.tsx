@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Icon } from "@iconify/react"
 import { useRouter } from "next/navigation"
 import { redirect } from "next/navigation"
+import Link from "next/link"
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -37,7 +38,7 @@ export function LoginForm() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="Enter your email" required className="h-12" />
+          <Input id="email" type="email" placeholder="Enter your email" required className="h-12 rounded-2xl" />
         </div>
 
         <div className="space-y-2">
@@ -48,7 +49,7 @@ export function LoginForm() {
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
               required
-              className="h-12 pr-10"
+              className="h-12 pr-10 rounded-2xl"
             />
             <button
               type="button"
@@ -61,12 +62,12 @@ export function LoginForm() {
         </div>
 
         <div className="text-right">
-          <a href="#" className="text-sm text-primary-600 hover:text-primary-700">
+          <Link href="#" className="text-sm text-primary-600 hover:text-primary-700 hover:underline hover:underline-offset-2">
             Forgot password?
-          </a>
+          </Link>
         </div>
 
-        <Button type="submit" className="w-full h-12 bg-primary-600 hover:bg-primary-700" disabled={isLoading}>
+        <Button type="submit" className="w-full h-12 bg-primary-600 hover:bg-primary-700 rounded-full" disabled={isLoading}>
           {isLoading ? <Icon icon="mdi:loading" className="w-5 h-5 animate-spin" /> : "Login"}
         </Button>
       </form>
