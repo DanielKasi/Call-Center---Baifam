@@ -5,11 +5,9 @@ import { ContactsHeader } from "@/components/contacts/contacts-header"
 import { ContactsList } from "@/components/contacts/contacts-list"
 import { ContactsGrid } from "@/components/contacts/contacts-grid"
 import { ContactsFilters } from "@/components/contacts/contacts-filters"
-import { IContact } from "@/app/types/types.utils"
+import type { IContact } from "@/app/types/types.utils"
 
-
-
-const mockContacts: IContact[] = [
+const initialMockContacts: IContact[] = [
   {
     id: "1",
     name: "Roy Didanie Kasasa",
@@ -78,17 +76,36 @@ const mockContacts: IContact[] = [
 
 export default function ContactsPage() {
   const [viewMode, setViewMode] = useState<"list" | "grid">("list")
-  const [filteredContacts, setFilteredContacts] = useState(mockContacts)
+  const [contacts, setContacts] = useState<IContact[]>(initialMockContacts)
+  const [filteredContacts, setFilteredContacts] = useState(contacts)
+  const [selectedContactIds, setSelectedContactIds] = useState<string[]>([])
+
+  const handleContactsUpdate = (updatedContacts: IContact[]) => {
+    setContacts(updatedContacts)
+  }
 
   return (
-    <div className="space-y-6 w-fu">
-      <ContactsHeader contacts={mockContacts} onFilteredContactsChange={setFilteredContacts} />
-      <ContactsFilters viewMode={viewMode} onViewModeChange={setViewMode}  />
+    <div className="space-y-6 w-full">
+      <ContactsHeader
+        contacts={contacts}
+        onFilteredContactsChange={setFilteredContacts}
+        selectedContactIds={selectedContactIds}
+        onContactsUpdate={handleContactsUpdate}
+      />
+      <ContactsFilters viewMode={viewMode} onViewModeChange={setViewMode} />
 
       {viewMode === "list" ? (
-        <ContactsList contacts={filteredContacts} />
+        <ContactsList
+          contacts={filteredContacts}
+          selectedContactIds={selectedContactIds}
+          onSelectionChange={setSelectedContactIds}
+        />
       ) : (
-        <ContactsGrid contacts={filteredContacts} />
+        <ContactsGrid
+          contacts={filteredContacts}
+          selectedContactIds={selectedContactIds}
+          onSelectionChange={setSelectedContactIds}
+        />
       )}
     </div>
   )

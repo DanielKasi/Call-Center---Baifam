@@ -16,7 +16,7 @@ export default function DashboardLayout({
         <DashboardSidebar />
         <div className="flex-1 flex flex-col min-h-screen">
           <DashboardHeader />
-          <main className="flex-1 max-h-[90svh] p-6 overflow-y-auto">{children}</main>
+          <main className="flex-1 max-h-[90svh] px-6 !py-0 overflow-y-auto">{children}</main>
         </div>
       </div>
     </div>
