@@ -140,7 +140,8 @@ export default function VerifyOTPPage() {
                   key={index}
                   aria-label={`OTP digit ${index + 1}`}
                   autoFocus={index === 0}
-                  className="text-center font-bold text-lg h-14 w-12"
+
+                  className="text-center ring-primary font-bold text-lg h-14 w-12"
                   id={`otp-${index}`}
                   inputMode="numeric"
                   maxLength={1}

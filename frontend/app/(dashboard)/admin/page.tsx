@@ -17,8 +17,6 @@ import {
   ClipboardList,
   Palette,
   GitBranch,
-  BookOpen,
-  BadgeDollarSign,
 } from "lucide-react";
 import {Separator} from "@/components/ui/separator";
 import ProtectedComponent from "@/components/ProtectedComponent";
@@ -201,7 +199,7 @@ export default function AdminPage() {
 
               <div className="space-y-4">
                 <Link
-                  href="/admin/Institution-approval-steps/"
+                  href="/admin/shop-approval-steps/"
                   className="flex items-center gap-3 text-gray-700 hover:text-gray-900"
                 >
                   <Store className="w-5 h-5 text-gray-500" />

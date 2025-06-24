@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Dialog,
@@ -7,24 +7,23 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Icon } from "@iconify/react"
-import { useRouter } from "next/navigation"
+} from "@/components/ui/dialog";
+import {Button} from "@/components/ui/button";
+import {Icon} from "@iconify/react";
+import {useRouter} from "next/navigation";
+import {useDispatch} from "react-redux";
+import { logoutStart } from "@/store/auth/actions";
 
 interface LogoutDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-
-export function LogoutDialog({ open, onOpenChange }: LogoutDialogProps) {
-
-    const router = useRouter();
+export function LogoutDialog({open, onOpenChange}: LogoutDialogProps) {
+  const dispatch = useDispatch();
   const handleLogout = () => {
-    // Handle logout logic here
-    router.push("/login")
-  }
+    dispatch(logoutStart())
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -48,5 +47,5 @@ export function LogoutDialog({ open, onOpenChange }: LogoutDialogProps) {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
