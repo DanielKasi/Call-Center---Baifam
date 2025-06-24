@@ -18,14 +18,11 @@ from drf_spectacular.utils import extend_schema
 
 from workflows.request_serializers import ApprovalTaskStatusUpdateSerializer
 from workflows.serializers import (
-    ReorderStepsSerializer,
     InstitutionApprovalStepSerializer,
     ApprovalTaskSerializer,
     WorkflowActionSerializer,
 )
 from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
-
 channel_layer = get_channel_layer()
 
 
@@ -281,7 +278,7 @@ class InstitutionApprovalStepAPIView(APIView):
 
 class InstitutionApprovalStepReorderAPIView(APIView):
     @extend_schema(
-        request=ReorderStepsSerializer,
+        # request=ReorderStepsSerializer,
         responses={200: InstitutionApprovalStepSerializer(many=True)},
         summary="Bulk-reorder Institution approval steps",
         description=(

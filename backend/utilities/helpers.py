@@ -140,7 +140,7 @@ def send_plain_email(receivers, subject, body, fail_silently=False):
 
 def send_otp_to_user(user, otp):
     try:
-        print("\n ...Sending otp to user : ", user.fullname)
+        print("\n ...Sending otp to user : ", user.fullname, "\n\n With default from email : ", settings.DEFAULT_FROM_EMAIL)
         subject = "Verify Your Account"
 
         context = {"user": user, "otp_code": otp, "year": datetime.datetime.now().year}
@@ -197,7 +197,7 @@ def send_password_link_to_user(user, link):
             "user": user,
             "year": datetime.datetime.now().year,
         }
-        html_message = render_to_string("institutions/emails/signup_link_email.html", context)
+        html_message = render_to_string("institution/shops/emails/signup_link_email.html", context)
         plain_message = strip_tags(html_message)
 
         send_mail(
@@ -209,7 +209,7 @@ def send_password_link_to_user(user, link):
         )
         return True
     except Exception as e:
-        print("Error sending email:", e)
+        print("Error sending password link email:", e)
         return False
 
 def send_password_reset_link_to_user(user, link):
@@ -232,7 +232,7 @@ def send_password_reset_link_to_user(user, link):
         )
         return True
     except Exception as e:
-        print("Error sending email:", e)
+        print("Error sending password reset link email:", e)
         return False
 
 

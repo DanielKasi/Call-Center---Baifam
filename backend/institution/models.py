@@ -60,7 +60,7 @@ class Institution(models.Model):
         unique_together = ('institution_owner', 'institution_name')
 
     def __str__(self):
-        return self.name
+        return self.institution_name
 
     @property
     def is_approved(self):
@@ -129,7 +129,7 @@ class Branch(models.Model):
         return (
             self.branch_location
             + " - "
-            + self.institution.name
+            + self.institution.institution_name
             + " - "
             + self.branch_name
         )

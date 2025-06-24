@@ -173,7 +173,7 @@ export type WorkflowAction = {
 export interface Branch {
   id: number;
   institution: number;
-  institution_name:string;
+  institution_name?:string;
   tills?: ITill[];
   branch_name: string;
   branch_phone_number?: string;
