@@ -6,14 +6,12 @@ import { LoginForm } from "@/components/auth/login-form"
 export default function LoginPage() {
   return (
     <div className="min-h-screen flex">
-      {/* Left side - Illustration */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary-100 to-primary-200 items-center justify-center p-12">
         <div className="max-w-md">
           <img src="/images/login-illustration.svg" alt="Call center illustration" className="w-full h-auto" />
         </div>
       </div>
 
-      {/* Right side - Login Form */}
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <LoginForm />
@@ -28,7 +26,7 @@ export default function LoginPage() {
 // import {useRouter} from "next/navigation";
 // import {Eye, EyeOff, ShoppingCart} from "lucide-react";
 // import Link from "next/link";
-// import {useDispatch} from "react-redux";
+// import {useDispatch} fro_m "react-redux";
 // import {useSelector} from "react-redux";
 // import {toast} from "sonner";
 
@@ -176,7 +174,7 @@ export default function LoginPage() {
 //           <div className="flex items-center justify-center mb-2">
 //             <ShoppingCart className="h-10 w-10 text-primary" />
 //           </div>
-//           <CardTitle className="text-2xl text-center">APPLICATION NAME</CardTitle>
+//           <CardTitle className="text-2xl text-center">{process.env.APPLICATION_NAME}</CardTitle>
 //           <CardDescription className="text-center">
 //             Enter your credentials to access your account
 //           </CardDescription>

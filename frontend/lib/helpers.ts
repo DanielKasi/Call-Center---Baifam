@@ -328,3 +328,9 @@ export const fetchMarketPlaceOrders = async () => {
 
 export const getInstitutionById = async (InstitutionId: number) =>
   await apiRequest.get(`institution/${InstitutionId}/`);
+
+export async function sendOtp({mode, email}: {mode: "password_link" | "otp"; email: string}) {
+  return await apiRequest.post(`user/resend-otp/?mode=${mode}`, {
+    email,
+  });
+}

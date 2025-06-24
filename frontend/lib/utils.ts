@@ -59,22 +59,22 @@ export interface ResetPasswordRequest {
   new_password: string;
 }
 
-export interface LoginResponse {
-  tokens: {
-    access: string;
-    refresh: string;
-  };
-  user: {
-    id: number;
-    email: string;
-    fullname: string;
-    is_active: boolean;
-    is_email_verified: boolean;
-    is_password_verified: boolean;
-    is_staff: boolean;
-  };
-  Institutions_attached?: any[];
-}
+// export interface LoginResponse {
+//   tokens: {
+//     access: string;
+//     refresh: string;
+//   };
+//   user: {
+//     id: number;
+//     email: string;
+//     fullname: string;
+//     is_active: boolean;
+//     is_email_verified: boolean;
+//     is_password_verified: boolean;
+//     is_staff: boolean;
+//   };
+//   Institutions_attached?: any[];
+// }
 
 /**
  * Request a password reset

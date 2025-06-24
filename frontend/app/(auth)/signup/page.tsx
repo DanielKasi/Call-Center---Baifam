@@ -60,7 +60,7 @@ export default function SignupPage() {
     setErrorMessage("");
 
     if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
+      showErrorMessage("Passwords do not match");
 
       return;
     }
@@ -84,9 +84,9 @@ export default function SignupPage() {
       });
 
       if (response.status === 201) {
-        const user_id = response.data.id;
+        // const user_id = response.data.id;
 
-        router.push(`verify-otp?user_id=${encodeURIComponent(user_id)}`);
+        router.push(`verify-otp?q=${encodeURIComponent(email)}`);
       }
     } catch (error: any) {
       handleApiError(error);
@@ -115,7 +115,7 @@ export default function SignupPage() {
           </div>
           <CardTitle className="text-2xl text-center">Create an Account</CardTitle>
           <CardDescription className="text-center">
-            Enter your details to sign up for APPLICATION NAME
+            Enter your details to sign up for {process.env.APPLICATION_NAME}
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSignup}>
@@ -130,6 +130,7 @@ export default function SignupPage() {
                 type="text"
                 value={fullname}
                 onChange={(e) => setFullname(e.target.value)}
+                className="h-12 pr-10 rounded-2xl"
               />
             </div>
             <div className="grid gap-2">
@@ -141,6 +142,7 @@ export default function SignupPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                className="h-12 pr-10 rounded-2xl"
               />
             </div>
             <div className="grid gap-2">
@@ -155,6 +157,7 @@ export default function SignupPage() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="h-12 pr-10 rounded-2xl"
                 />
                 <Button
                   className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground"
@@ -180,6 +183,7 @@ export default function SignupPage() {
                     type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="h-12 pr-10 rounded-2xl"
                   />
                   <Button
                     className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground"
@@ -232,7 +236,7 @@ export default function SignupPage() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col">
-            <Button className="w-full" disabled={isSubmitting || !isPasswordValid} type="submit">
+            <Button className="w-full h-12 bg-primary hover:bg-primary-700 rounded-full" disabled={isSubmitting || !isPasswordValid} type="submit">
               {isSubmitting ? "Signing up..." : "Sign Up"}
             </Button>
             <p className="mt-4 text-center text-sm text-muted-foreground">

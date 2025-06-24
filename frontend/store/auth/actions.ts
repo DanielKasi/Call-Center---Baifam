@@ -6,6 +6,7 @@ import {AuthError} from "./reducer";
 import {ITill, StoredColorData} from "@/app/types";
 import {Branch, IPermission, IUser, IUserInstitution} from "@/app/types";
 import {getAuthError} from "@/utils/errorUtils";
+import {LoginResponse} from "@/utils/authUtils";
 
 type UpdateThemeAction = ActionWithPayLoad<AUTH_ACTION_TYPES.UPDATE_THEME, StoredColorData>;
 type RemoveThemeAction = Action<AUTH_ACTION_TYPES.REMOVE_THEME>;
@@ -20,7 +21,8 @@ type LoginFailure = ActionWithPayLoad<AUTH_ACTION_TYPES.LOGIN_FAILURE, AuthError
 type FetchRemoteUserStart = Action<AUTH_ACTION_TYPES.FETCH_REMOTE_USER_START>;
 type FetchRemoteUserFailure = Action<AUTH_ACTION_TYPES.FETCH_REMOTE_USER_FAILURE>;
 
-type SetUser = ActionWithPayLoad<AUTH_ACTION_TYPES.SET_USER, IUser>;
+type SetUser = ActionWithPayLoad<AUTH_ACTION_TYPES.SET_CURRENT_USER, IUser>;
+type RefreshUser = ActionWithPayLoad<AUTH_ACTION_TYPES.REFRESH_USER, LoginResponse>;
 
 type LogoutStart = Action<AUTH_ACTION_TYPES.LOGOUT_START>;
 
@@ -75,7 +77,8 @@ export type AuthAction =
   | SetTemporaryPermissions
   | ClearTemporaryPermissions
   | SetSelectedTill
-  | ClearSelectedTill;
+  | ClearSelectedTill
+  | RefreshUser;
 
 export const loginStart = (email: string, password: string): LoginStart =>
   createAction(AUTH_ACTION_TYPES.LOGIN_START, {email, password});
@@ -87,8 +90,11 @@ export const logoutFailure = (errorMessage: string): LogoutFailure =>
   createAction(AUTH_ACTION_TYPES.LOGOUT_FAILURE, errorMessage);
 export const logoutSuccess = (): LogoutSuccess => createAction(AUTH_ACTION_TYPES.LOGOUT_SUCCESS);
 
-export const setUserAction = (user: IUser): SetUser =>
-  createAction(AUTH_ACTION_TYPES.SET_USER, user);
+export const setCurrentUser = (user: IUser): SetUser =>
+  createAction(AUTH_ACTION_TYPES.SET_CURRENT_USER, user);
+
+export const refreshUser = (loginResponse:LoginResponse):RefreshUser => 
+  createAction(AUTH_ACTION_TYPES.REFRESH_USER, loginResponse)
 
 export const setRefreshToken = (token: string): SetRefreshToken =>
   createAction(AUTH_ACTION_TYPES.SET_REFRESH_TOKEN, token);

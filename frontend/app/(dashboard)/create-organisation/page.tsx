@@ -35,7 +35,8 @@ import {
   setRefreshToken,
   setSelectedBranch,
   setSelectedInstitution,
-  setUserAction,
+  setCurrentUser,
+  refreshUser,
 } from "@/store/auth/actions";
 import {toast} from "sonner";
 import type {LoginResponse} from "@/utils/authUtils";
@@ -72,12 +73,12 @@ const STEPS = [
   {
     id: 1,
     title: "Organisation Info",
-    description: "Basic details about your supermarket",
+    description: "Basic details about your institution",
   },
   {
     id: 2,
     title: "Location Details",
-    description: "Where is your supermarket located",
+    description: "Where is your institution located",
   },
   {id: 3, title: "Documents", description: "Upload required documents"},
 ];
@@ -182,9 +183,7 @@ export default function CreateOrganisationWizard() {
       case 2:
         return !!(formData.location && formData.latitude && formData.longitude);
       case 3:
-        // For step 3, we'll consider it valid if either:
-        // 1. There are no documents (documents are optional)
-        // 2. All documents have both title and file
+
         return (
           formData.documents.length === 0 ||
           formData.documents.every((doc) => doc.title && doc.file)
@@ -209,19 +208,17 @@ export default function CreateOrganisationWizard() {
   };
 
   const handleUserRefresh = (loginResponse: LoginResponse) => {
-    dispatch(setAccessToken(loginResponse.tokens.access));
-    dispatch(setRefreshToken(loginResponse.tokens.refresh));
-    dispatch(setUserAction(loginResponse.user));
+    dispatch(refreshUser(loginResponse))
 
-    if (loginResponse.institutionsAttached.length) {
-      const defaultSelectedInstitution = loginResponse.institutionsAttached.find(
+    if (loginResponse.InstitutionsAttached.length) {
+      const defaultSelectedInstitution = loginResponse.InstitutionsAttached.find(
         (institution) =>
           institution.institution_name === formData.institutionName &&
           institution.first_phone_number === formData.firstPhoneNumber,
       );
-      dispatch(setAttachedInstitutions(loginResponse.institutionsAttached));
+      dispatch(setAttachedInstitutions(loginResponse.InstitutionsAttached));
       dispatch(
-        setSelectedInstitution(defaultSelectedInstitution || loginResponse.institutionsAttached[0]),
+        setSelectedInstitution(defaultSelectedInstitution || loginResponse.InstitutionsAttached[0]),
       );
       if (
         defaultSelectedInstitution &&
@@ -229,8 +226,8 @@ export default function CreateOrganisationWizard() {
         defaultSelectedInstitution.branches.length
       ) {
         dispatch(setSelectedBranch(defaultSelectedInstitution.branches[0]));
-      } else if (loginResponse.institutionsAttached[0].branches?.length) {
-        dispatch(setSelectedBranch(loginResponse.institutionsAttached[0].branches[0]));
+      } else if (loginResponse.InstitutionsAttached[0].branches?.length) {
+        dispatch(setSelectedBranch(loginResponse.InstitutionsAttached[0].branches[0]));
       }
     }
   };
@@ -323,7 +320,7 @@ export default function CreateOrganisationWizard() {
           );
           const responseData = {
             ...fetchedUserResponse.data,
-            institutionsAttached: fetchedUserResponse.data.institutions_attached,
+            InstitutionsAttached: fetchedUserResponse.data.institutions_attached,
           } as LoginResponse;
 
           handleUserRefresh(responseData);
@@ -338,7 +335,7 @@ export default function CreateOrganisationWizard() {
         // setIsCreated(true);
       }
     } catch (error: any) {
-      toast.error("Failed to create supermarket. Please try again.");
+      toast.error("Failed to create institution. Please try again.");
 
       if (error.response) {
         toast.error(
@@ -423,7 +420,7 @@ export default function CreateOrganisationWizard() {
                 <Input
                   id="institutionEmail"
                   type="email"
-                  placeholder="contact@ecosupermarket.com"
+                  placeholder="contact@ecoinstitution.com"
                   value={formData.institutionEmail}
                   onChange={(e) => updateFormData("institutionEmail", e.target.value)}
                   className="pl-10"
@@ -477,7 +474,7 @@ export default function CreateOrganisationWizard() {
               </Label>
               <Textarea
                 id="description"
-                placeholder="Tell us about your supermarket..."
+                placeholder="Tell us about your institution..."
                 value={formData.description}
                 onChange={(e) => updateFormData("description", e.target.value)}
                 rows={3}
@@ -498,7 +495,7 @@ export default function CreateOrganisationWizard() {
                   updateFormData("latitude", lat);
                   updateFormData("longitude", lon);
                 }}
-                placeholder="Search for your supermarket location..."
+                placeholder="Search for your institution location..."
                 showCurrentLocationButton={true}
               />
               {formData.latitude && formData.longitude && (
@@ -514,7 +511,7 @@ export default function CreateOrganisationWizard() {
                 <div>
                   <h4 className="font-medium text-sm">Location Tips</h4>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Make sure to select the exact location of your supermarket. This will help
+                    Make sure to select the exact location of your institution. This will help
                     customers find you easily and enable location-based features.
                   </p>
                 </div>
@@ -530,7 +527,7 @@ export default function CreateOrganisationWizard() {
               <div>
                 <Label className="text-sm font-medium">Documents (Optional)</Label>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Upload any required documents for your supermarket registration
+                  Upload any required documents for your institution registration
                 </p>
               </div>
               <Button

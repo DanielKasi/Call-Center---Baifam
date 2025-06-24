@@ -14,7 +14,7 @@ import {
   setRefreshToken,
   setSelectedBranch,
   setSelectedInstitution,
-  setUserAction,
+  setCurrentUser,
 } from "./actions";
 import {selectSelectedInstitution, selectUser} from "./selectors";
 
@@ -40,14 +40,13 @@ function* login({
     }
     yield put(setAccessToken(loginResponse.tokens.access));
     yield put(setRefreshToken(loginResponse.tokens.refresh));
-    yield put(setUserAction(loginResponse.user));
+    yield put(setCurrentUser(loginResponse.user));
 
     if (loginResponse.InstitutionsAttached.length) {
       yield put(setAttachedInstitutions(loginResponse.InstitutionsAttached));
       yield put(setSelectedInstitution(loginResponse.InstitutionsAttached[0]));
       if (
-        loginResponse.InstitutionsAttached[0].branches &&
-        loginResponse.InstitutionsAttached[0].branches.length
+        loginResponse.InstitutionsAttached[0]?.branches?.length
       ) {
         yield put(setSelectedBranch(loginResponse.InstitutionsAttached[0].branches[0]));
       }
@@ -91,7 +90,7 @@ function* fetchRemoteUser() {
     const user: IUser | null = yield call(fetchUserById, currentUser.id);
 
     if (user) {
-      yield put(setUserAction(user));
+      yield put(setCurrentUser(user));
     }
   } catch {}
 }
@@ -114,6 +113,18 @@ function* fetchRemoteInstitution() {
   } catch {}
 }
 
+
+function* handleUserRefresh({payload:loginResponse}:ActionWithPayLoad<AUTH_ACTION_TYPES.REFRESH_USER, LoginResponse>){
+    yield put(setAccessToken(loginResponse.tokens.access));
+    yield put(setRefreshToken(loginResponse.tokens.refresh));
+    yield put(setCurrentUser(loginResponse.user));
+
+    if (loginResponse.InstitutionsAttached.length) {
+      yield put(setAttachedInstitutions(loginResponse.InstitutionsAttached));
+      
+    }
+  };
+
 export function* watchLogout() {
   yield takeLatest(AUTH_ACTION_TYPES.LOGOUT_START, logout);
 }
@@ -125,11 +136,16 @@ export function* watchUpToDateInstitutionFetch() {
   yield takeLatest(AUTH_ACTION_TYPES.FETCH_UPTODATE_Institution, fetchRemoteInstitution);
 }
 
+export function* watchUserRefresh(){
+  yield takeLatest(AUTH_ACTION_TYPES.REFRESH_USER, handleUserRefresh)
+}
+
 export function* authSaga() {
   yield all([
     fork(watchLogin),
     fork(watchLogout),
     fork(watchFetchRemoteUser),
     fork(watchUpToDateInstitutionFetch),
+    fork(watchUserRefresh)
   ]);
 }

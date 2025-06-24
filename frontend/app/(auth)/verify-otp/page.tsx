@@ -12,24 +12,28 @@ import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components
 import {Input} from "@/components/ui/input";
 import apiRequest from "@/lib/apiRequest";
 import {handleApiError} from "@/lib/apiErrorHandler";
+import {sendOtp} from "@/lib/helpers";
+import {Label} from "@/components/ui/label";
 
 export default function VerifyOTPPage() {
   const searchParams = useSearchParams();
-  const user_id = searchParams.get("user_id") || "";
+  const email = searchParams.get("q") || "";
   const [otp, setOTP] = useState<string[]>(Array(6).fill(""));
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [resendDisabled, setResendDisabled] = useState<boolean>(false);
   const [resendCountdown, setResendCountdown] = useState<number>(0);
+  const [showResendEmailField, setShowResendEmailField] = useState(false);
+  const [resendEmail, setResendEmail] = useState("");
   const router = useRouter();
 
   useEffect(() => {
-    if (!user_id) {
+    if (!email) {
       setErrorMessage("Oops something went wrong!");
       toast("Missing user information. Redirecting to login page.");
       router.push("/login");
     }
-  }, [user_id, router]);
+  }, [email, router]);
 
   useEffect(() => {
     // Countdown timer for resend button
@@ -46,6 +50,10 @@ export default function VerifyOTPPage() {
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
+    if(showResendEmailField){
+      await handleResend();
+      return
+    }
 
     // Validate OTP is complete
     if (otp.some((digit) => digit === "")) {
@@ -59,7 +67,7 @@ export default function VerifyOTPPage() {
 
     try {
       const response = await apiRequest.post("user/verify-otp/", {
-        user_id,
+        email,
         otp: otp.join(""),
       });
 
@@ -77,13 +85,20 @@ export default function VerifyOTPPage() {
   };
 
   const handleResend = async () => {
-    if (resendDisabled) return;
+    if (!showResendEmailField) {
+      setShowResendEmailField(true);
+      return;
+    }
+    if (resendDisabled || !resendEmail) return;
+
+    setResendEmail(resendEmail);
 
     setIsSubmitting(true);
     setResendDisabled(true);
     setResendCountdown(60);
     try {
-      await apiRequest.post("user/resend-otp/", {user_id});
+      await sendOtp({mode: "otp", email});
+      // await apiRequest.post("user/resend-otp/", {user_id});
       setErrorMessage("");
       setOTP(Array(6).fill(""));
       toast.success("A new verification code has been sent to your email.");
@@ -93,6 +108,8 @@ export default function VerifyOTPPage() {
       setResendCountdown(0);
     } finally {
       setIsSubmitting(false);
+      setShowResendEmailField(false)
+      setResendEmail("")
     }
   };
 
@@ -156,10 +173,28 @@ export default function VerifyOTPPage() {
                 />
               ))}
             </div>
+            {showResendEmailField && (
+              <div className="grid gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  required
+                  id="email"
+                  placeholder="name@example.com"
+                  type="email"
+                  value={resendEmail}
+                  onChange={(e) => setResendEmail(e.target.value)}
+                  className="h-12 pr-10 rounded-xl"
+                />
+              </div>
+            )}
           </CardContent>
           <CardFooter className="flex flex-col">
-            <Button className="w-full" disabled={isSubmitting} type="submit">
-              {isSubmitting ? "Verifying..." : "Verify"}
+            <Button className="w-full h-12 bg-primary rounded-full" disabled={isSubmitting} type="submit">
+              {showResendEmailField ? (
+                <>{isSubmitting ? "Reseding..." : "Resend"}</>
+              ) : (
+                <>{isSubmitting ? "Verifying..." : "Verify"}</>
+              )}
             </Button>
             <p className="mt-4 text-center text-sm text-muted-foreground">
               Didn't receive the code?{" "}

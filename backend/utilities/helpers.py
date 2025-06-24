@@ -140,6 +140,7 @@ def send_plain_email(receivers, subject, body, fail_silently=False):
 
 def send_otp_to_user(user, otp):
     try:
+        print("\n ...Sending otp to user : ", user.fullname)
         subject = "Verify Your Account"
 
         context = {"user": user, "otp_code": otp, "year": datetime.datetime.now().year}
@@ -159,6 +160,7 @@ def send_otp_to_user(user, otp):
         )
         return True
     except Exception as e:
+        print("\n\n EXception sending otp as : ", e)
         return False
 
 
@@ -246,5 +248,3 @@ accounts_increased_by_credits = [
 ]
 
 
-def get_system_parameter(code):
-    return SystemParameters.objects.get(code=code)

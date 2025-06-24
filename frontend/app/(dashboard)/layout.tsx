@@ -1,28 +1,28 @@
 "use client";
 
+import type React from "react";
+import {DashboardSidebar} from "@/components/dashboard/sidebar";
+import {DashboardHeader} from "@/components/dashboard/header";
+import {useSelector} from "react-redux";
+import {selectSelectedInstitution} from "@/store/auth/selectors";
+import CreateOrganisationWizard from "./create-organisation/page";
 
-import type React from "react"
-import { DashboardSidebar } from "@/components/dashboard/sidebar"
-import { DashboardHeader } from "@/components/dashboard/header"
-
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function DashboardLayout({children}: {children: React.ReactNode}) {
+  const selectedInstitution = useSelector(selectSelectedInstitution);
   return (
     <div className="min-h-screen bg-gray-50 fixed inset-0">
       <div className="flex w-full">
         <DashboardSidebar />
         <div className="flex-1 flex flex-col min-h-screen">
           <DashboardHeader />
-          <main className="flex-1 max-h-[90svh] px-6 !py-0 overflow-y-auto">{children}</main>
+          <main className="flex-1 max-h-[90svh]  px-6 py-0 pt-4 overflow-y-auto">
+            {selectedInstitution ? children: <CreateOrganisationWizard /> }
+          </main>
         </div>
       </div>
     </div>
-  )
+  );
 }
-
 
 // import React from "react";
 // import {useState, useEffect} from "react";
@@ -67,7 +67,7 @@ export default function DashboardLayout({
 //   DialogTitle,
 // } from "@/components/ui/dialog";
 // import {useMobile} from "@/hooks/use-mobile";
-// import {InstitutionBranchSelector} from "@/components/institution-branch-selector";
+// import {InstitutionBranchSelector} from "@/components/dashboard/institution-branch-selector";
 // import {TaskNotification} from "@/components/task-notification";
 // import Modules from "@/components/modules";
 // import {
@@ -89,8 +89,6 @@ export default function DashboardLayout({
 // import ProtectedComponent from "@/components/ProtectedComponent";
 // import apiRequest from "@/lib/apiRequest";
 // import { hexToHSL } from "@/lib/utils";
-
-
 
 // interface SubMenuItem {
 //   title: string;
@@ -399,7 +397,7 @@ export default function DashboardLayout({
 
 //     if (selectedInstitution) {
 //       setInstitutionLogo(selectedInstitution.Institution_logo);
-//       setInstitutionName(selectedInstitution.Institution_name);
+//       setInstitutionName(selectedInstitution.institution_name);
 //     }
 
 //     const filtered = navItems
@@ -597,7 +595,7 @@ export default function DashboardLayout({
 //             />
 //           </div>
 
-//           <h1 className="text-xl font-semibold text-gray-600 ml-8">APPLICATION NAME</h1>
+//           <h1 className="text-xl font-semibold text-gray-600 ml-8">{process.env.APPLICATION_NAME}</h1>
 
 //           <div className="flex-1 flex justify-center">
 //             {/* Assuming InstitutionBranchSelector is a custom component, we'll wrap it to add hover effects */}

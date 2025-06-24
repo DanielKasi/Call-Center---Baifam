@@ -9,15 +9,24 @@ export interface IProductCategoryDetail {
 
 export interface IUserInstitution {
   id: number;
-  Institution_email: string;
+  institution_email: string;
   institution_owner_id: number;
-  Institution_name: string;
-  Institution_logo: string | null;
+  institution_name: string;
+  institution_logo: string | null;
   theme_color: null | string;
   branches?: Branch[];
   first_phone_number: string;
   second_phone_number: string;
+  approval_date:string|null,
+  approval_status:"pending"|"approved"|"rejected"|"under_review",
+  approval_status_display:"Pending Approval"|"Approved"|"Rejected"|"Under Review",
+  documents:string[],
+  latitude:number,
+  logitude:number,
+  location:string
 }
+
+
 
 export interface IUnitOfMeasure {
   id: number;
@@ -164,7 +173,8 @@ export type WorkflowAction = {
 export interface Branch {
   id: number;
   institution: number;
-  tills: ITill[];
+  institution_name:string;
+  tills?: ITill[];
   branch_name: string;
   branch_phone_number?: string;
   branch_location: string;

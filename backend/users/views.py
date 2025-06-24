@@ -200,95 +200,95 @@ class VerifyOTPAPIView(APIView):
                 {"detail": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        user_id = serializer.validated_data["user_id"]
+        email = serializer.validated_data["email"]
         otp = serializer.validated_data["otp"]
 
         try:
-            user = CustomUser.objects.get(id=user_id)
+            user = CustomUser.objects.get(email=email)
 
-            success, message = verify_otp(user_id, received_otp=otp)
+            success, message = verify_otp(user.id, received_otp=otp)
 
             if success:
                 user.is_active = True
                 user.is_email_verified = True
                 user.save()
 
-                logger.info(f"User {user_id} verified and activated successfully")
+                logger.info(f"User with email:  {email} verified and activated successfully")
                 return Response(
                     {"message": "OTP verified successfully. Account activated."},
                     status=status.HTTP_200_OK,
                 )
             else:
-                logger.warning(f"OTP verification failed for user {user_id}: {message}")
+                logger.warning(f"OTP verification failed for user with email : {email}: {message}")
                 return Response(
                     {"message": message}, status=status.HTTP_400_BAD_REQUEST
                 )
 
         except CustomUser.DoesNotExist:
-            logger.error(f"User {user_id} not found during OTP verification")
+            logger.error(f"User with email : {email} not found during OTP verification")
             return Response(
                 {"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND
             )
         except Exception as e:
-            logger.error(f"Error during OTP verification for user {user_id}: {str(e)}")
+            logger.error(f"Error during OTP verification for user with email {email}: {str(e)}")
             return Response(
                 {"detail": "An error occurred during verification"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
 
-class ResendOTPView(APIView):
-    permission_classes = [permissions.AllowAny]
+# class ResendOTPView(APIView):
+#     permission_classes = [permissions.AllowAny]
 
-    @extend_schema(
-        request=ResendOTPSerializer,
-        responses={200: {"message": "string", "user_id": "integer"}},
-        description="Resend OTP to user",
-        summary="Resend OTP",
-        tags=["User Management"],
-    )
-    def post(self, request):
-        serializer = ResendOTPSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(
-                {"detail": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
-            )
+#     @extend_schema(
+#         request=ResendOTPSerializer,
+#         responses={200: {"message": "string", "user_id": "integer"}},
+#         description="Resend OTP to user",
+#         summary="Resend OTP",
+#         tags=["User Management"],
+#     )
+#     def post(self, request):
+#         serializer = ResendOTPSerializer(data=request.data)
+#         if not serializer.is_valid():
+#             return Response(
+#                 {"detail": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+#             )
 
-        user_id = serializer.validated_data["user_id"]
+#         user_id = serializer.validated_data["user_id"]
 
-        # Get the user from the database
-        try:
-            user = CustomUser.objects.get(id=user_id)
+#         # Get the user from the database
+#         try:
+#             user = CustomUser.objects.get(id=user_id)
 
-            # Don't resend OTP if user is already verified
-            if user.is_email_verified:
-                return Response(
-                    {"message": "User is already verified"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+#             # Don't resend OTP if user is already verified
+#             if user.is_email_verified:
+#                 return Response(
+#                     {"message": "User is already verified"},
+#                     status=status.HTTP_400_BAD_REQUEST,
+#                 )
 
-            # Create and send new OTP
-            otp = create_and_institution_otp(
-                user_id=user.id, purpose=f"registration_{user.id}", expiry_minutes=15
-            )
-            send_otp_to_user(user, otp)
+#             # Create and send new OTP
+#             otp = create_and_institution_otp(
+#                 user_id=user.id, purpose=f"registration_{user.id}", expiry_minutes=15
+#             )
+#             send_otp_to_user(user, otp)
 
-            logger.info(f"OTP resent to user {user_id}")
-            return Response(
-                {"message": "OTP sent successfully", "user_id": user_id},
-                status=status.HTTP_200_OK,
-            )
-        except CustomUser.DoesNotExist:
-            logger.warning(f"User {user_id} not found during OTP resend")
-            return Response(
-                {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
-            )
-        except Exception as e:
-            logger.error(f"Error resending OTP to user {user_id}: {str(e)}")
-            return Response(
-                {"error": "Failed to resend OTP"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+#             logger.info(f"OTP resent to user {user_id}")
+#             return Response(
+#                 {"message": "OTP sent successfully", "user_id": user_id},
+#                 status=status.HTTP_200_OK,
+#             )
+#         except CustomUser.DoesNotExist:
+#             logger.warning(f"User {user_id} not found during OTP resend")
+#             return Response(
+#                 {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
+#             )
+#         except Exception as e:
+#             logger.error(f"Error resending OTP to user {user_id}: {str(e)}")
+#             return Response(
+#                 {"error": "Failed to resend OTP"},
+#                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#             )
 
 
 class VerifyPasswordResetAPIView(APIView):
@@ -356,8 +356,8 @@ class ResendOTPAPIView(APIView):
             )
         try:
 
-            user_id	 = serializer.validated_data["user_id"]
-            user_instance = CustomUser.objects.get(id=user_id)
+            email = serializer.validated_data["email"]
+            user_instance = CustomUser.objects.get(email=email)
             otp = create_and_institution_otp(
                 user_id=user_instance.id, purpose="registration", expiry_minutes=15
             )
@@ -371,7 +371,6 @@ class ResendOTPAPIView(APIView):
                 send_password_link_to_user(user=user_instance, link=password_link)
 
             return Response(
-                CustomUserSerializer(user_instance).data,
                 status=status.HTTP_201_CREATED,
             )
 
@@ -426,19 +425,19 @@ class LoginView(APIView):
 
                 if user is not None:
                     if user.user_type == UserType.STAFF:
-                        institution_attached = user.institutions_owned.all()
+                        institutions_attached = user.institutions_owned.all()
 
                         # If user is not an institution owner, check if they are associated with an institution in profile
-                        if not institution_attached:
+                        if not institutions_attached:
                             try:
-                                institution_attached = (
+                                institutions_attached = (
                                     [user.profile.institution]
                                     if user.profile.institution
                                     else []
                                 )
                             except ObjectDoesNotExist:
-                                institution_attached = (
-                                    [] if not institution_attached else institution_attached
+                                institutions_attached = (
+                                    [] if not institutions_attached else institutions_attached
                                 )
 
                         serializer_context = {"user": user}
@@ -447,8 +446,8 @@ class LoginView(APIView):
                             {
                                 "tokens": user.get_token(),
                                 "user": CustomUserSerializer(user).data,
-                                "institution_attached": InstitutionWithBranchesSerializer(
-                                    institution_attached,
+                                "institutions_attached": InstitutionWithBranchesSerializer(
+                                    institutions_attached,
                                     many=True,
                                     context=serializer_context,
                                 ).data,
@@ -482,18 +481,18 @@ class UserInstitutionsListAPIView(APIView):
 
             if not user or user.user_type != UserType.POS:
                 return Response(status=status.HTTP_403_FORBIDDEN)
-            institution_attached = user.institution_owned.all()
+            institutions_attached = user.institution_owned.all()
 
-            if not institution_attached or not len(institution_attached):
+            if not institutions_attached or not len(institutions_attached):
                 try:
-                    institution_attached = (
+                    institutions_attached = (
                         [user.profile.institution] if user.profile.institution else []
                     )
                 except ObjectDoesNotExist:
-                    institution_attached = [] if not institution_attached else institution_attached
+                    institutions_attached = [] if not institutions_attached else institutions_attached
 
             serializer = InstitutionWithBranchesSerializer(
-                institution_attached,
+                institutions_attached,
                 many=True,
                 context={"user": user},
             )
@@ -530,7 +529,7 @@ class CustomTokenRefreshView(TokenRefreshView):
                         "refresh": str(refresh_token),
                     },
                     "user": CustomUserSerializer(user).data,
-                    "institution_attached": InstitutionWithBranchesSerializer(
+                    "institutions_attached": InstitutionWithBranchesSerializer(
                         user.institutions_owned.all(), many=True, context={"user": user}
                     ).data,
                 }
