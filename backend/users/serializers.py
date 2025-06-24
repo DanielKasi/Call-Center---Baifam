@@ -200,7 +200,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class UserOTPVerificationSerializer(serializers.Serializer):
-    user_id = serializers.IntegerField()
+    email = serializers.EmailField()
     otp = serializers.CharField(max_length=6, min_length=6)
 
     def validate_otp(self, value):
@@ -209,7 +209,7 @@ class UserOTPVerificationSerializer(serializers.Serializer):
         return value
 
 class ResendOTPSerializer(serializers.Serializer):
-    user_id = serializers.IntegerField()
+    email = serializers.EmailField()
 
 
 class UserPasswordResetSerializer(serializers.Serializer):
@@ -236,7 +236,7 @@ class LoginResponseSerializer(serializers.Serializer):
 class InstitutionUserLoginResponseSerializer(LoginResponseSerializer):
     from institution.serializers import InstitutionSerializer
 
-    institution_attached = InstitutionSerializer(many=True)
+    institutions_attached = InstitutionSerializer(many=True)
 
 
 class RolePermissionSerializer(serializers.ModelSerializer):

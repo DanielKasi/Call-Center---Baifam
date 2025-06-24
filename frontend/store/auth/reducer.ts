@@ -126,7 +126,7 @@ export const authReducer = (
         },
       };
 
-    case AUTH_ACTION_TYPES.SET_USER:
+    case AUTH_ACTION_TYPES.SET_CURRENT_USER:
       return {
         ...state,
         user: {
@@ -138,7 +138,7 @@ export const authReducer = (
       };
 
     case AUTH_ACTION_TYPES.CLEAR_AUTH_ERROR:
-      return {...state, user: {...state.user, error: null}};
+      return {...state, user: {...state.user, error: null, loading:false}};
 
     case AUTH_ACTION_TYPES.UPDATE_THEME:
       return {

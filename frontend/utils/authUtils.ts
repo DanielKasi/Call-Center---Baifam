@@ -19,7 +19,7 @@ export const loginWithEmailAndPassword = async (email: string, password: string)
 
   return {
     ...responseData,
-    InstitutionsAttached: response.data.institution_attached,
+    InstitutionsAttached: response.data.institutions_attached,
   } as LoginResponse;
 };
 

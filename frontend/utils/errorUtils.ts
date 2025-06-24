@@ -1,20 +1,18 @@
-import {AxiosError} from "axios";
+
 
 import {CUSTOM_CODES} from "@/app/types/types.utils";
 import {AuthError} from "@/store/auth/reducer";
 
 export const getAuthError = (error: any): AuthError => {
   console.log("\n\nPassed in error on login : ", error);
-  if (error instanceof AxiosError) {
-    const errorData = error.response?.data;
-
-    if (errorData["custom_code"] as CUSTOM_CODES) {
+    if (error["custom_code"] as CUSTOM_CODES) {
       return {
-        customCode: errorData["custom_code"] as CUSTOM_CODES,
-        message: errorData["detail"] || "Unkown error",
+        customCode: error["custom_code"] as CUSTOM_CODES,
+        message: error["detail"] || "Unkown error",
       };
     }
-  }
+
+  console.log("\n\nError is not axios error...")
 
   return {customCode: CUSTOM_CODES.OTHER, message: "Unkown error"};
 };
