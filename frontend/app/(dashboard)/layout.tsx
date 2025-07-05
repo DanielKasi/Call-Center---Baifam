@@ -1,22 +1,22 @@
 "use client";
 
 import type React from "react";
-import {DashboardSidebar} from "@/components/dashboard/sidebar";
-import {DashboardHeader} from "@/components/dashboard/header";
-import {useSelector} from "react-redux";
-import {selectSelectedInstitution} from "@/store/auth/selectors";
+import { DashboardSidebar } from "@/components/dashboard/sidebar";
+import { DashboardHeader } from "@/components/dashboard/header";
+import { useSelector } from "react-redux";
+import { selectSelectedInstitution } from "@/store/auth/selectors";
 import CreateOrganisationWizard from "./create-organisation/page";
 
-export default function DashboardLayout({children}: {children: React.ReactNode}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const selectedInstitution = useSelector(selectSelectedInstitution);
   return (
     <div className="min-h-screen bg-gray-50 fixed inset-0">
       <div className="flex w-full">
-        <DashboardSidebar />
+        {/* <DashboardSidebar /> */}
         <div className="flex-1 flex flex-col min-h-screen">
           <DashboardHeader />
           <main className="flex-1 max-h-[90svh]  px-6 py-0 pt-4 overflow-y-auto">
-            {selectedInstitution ? children: <CreateOrganisationWizard /> }
+            {selectedInstitution ? children : <CreateOrganisationWizard />}
           </main>
         </div>
       </div>

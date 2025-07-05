@@ -120,7 +120,7 @@ export default function CreateOrganisationWizard() {
         toast.error("Error retrieving user information. Please log out and log in again.");
       }
     } else {
-      router.push("/login");
+      // router.push("/login");
     }
   }, [userData, router]);
 

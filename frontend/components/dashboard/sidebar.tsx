@@ -5,14 +5,15 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@iconify/react"
 import { usePathname, useRouter } from "next/navigation"
+import Link from "next/link"
 
 type NavItem = {
-    name:string,
-    href:string,
-    icon:string
+    name: string,
+    href: string,
+    icon: string
 }
 
-const navigation:NavItem[] = [
+const navigation: NavItem[] = [
     {
         name: "Dashboard",
         href: "/dashboard",
@@ -39,12 +40,11 @@ const navigation:NavItem[] = [
         icon: "hugeicons:message-01",
     },
 ]
- 
+
 
 
 export function DashboardSidebar() {
     const [collapsed, setCollapsed] = useState(false);
-    const [currentNavItem, setCurrentNavItem] = useState("Dashboard");
     const pathName = usePathname();
 
     const router = useRouter();
@@ -65,9 +65,8 @@ export function DashboardSidebar() {
                     {navigation.map((item) => (
                         <span
                             key={item.name}
-                            onClick={()=>{
-                                router.push(item.href);
-                                setCurrentNavItem(item.name)
+                            onClick={() => {
+                                router.push(item.href)
                             }}
                             className={cn(
                                 "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer",
